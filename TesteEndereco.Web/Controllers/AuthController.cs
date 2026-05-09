@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TesteEndereco.Web.Data;
+using TesteEndereco.Web.Models;
 using TesteEndereco.Web.Models.ViewModels;
 
 namespace TesteEndereco.Web.Controllers
@@ -41,6 +42,44 @@ namespace TesteEndereco.Web.Controllers
             HttpContext.Session.SetString("UsuarioNome", usuario.Nome);
 
             return RedirectToAction("Index", "Enderecos");
+        }
+        [HttpGet]
+        public IActionResult Registrar()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Registrar(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var usuarioExistente = await _context.Usuarios
+                .AnyAsync(u => u.UserName == model.UserName);
+
+            if (usuarioExistente)
+            {
+                ModelState.AddModelError("UserName", "Este nome de usuário já está em uso.");
+                return View(model);
+            }
+
+            var usuario = new Usuario
+            {
+                Nome = model.Nome,
+                UserName = model.UserName,
+                SenhaHash = model.Senha
+            };
+
+            _context.Usuarios.Add(usuario);
+            await _context.SaveChangesAsync();
+
+            TempData["Sucesso"] = "Usuário cadastrado com sucesso. Faça o login para continuar.";
+
+            return RedirectToAction("Login");
         }
 
         public IActionResult Logout()
