@@ -40,7 +40,7 @@ namespace TesteEndereco.Web.Controllers
             HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
             HttpContext.Session.SetString("UsuarioNome", usuario.Nome);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Enderecos");
         }
 
         public IActionResult Logout()
