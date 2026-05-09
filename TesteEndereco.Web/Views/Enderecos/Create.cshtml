@@ -7,11 +7,14 @@
 <h2>Novo Endereço</h2>
 
 <form asp-action="Create" method="post">
-    <div class="mb-3">
-        <label asp-for="Cep" class="form-label"></label>
-        <input asp-for="Cep" class="form-control" />
-        <span asp-validation-for="Cep" class="text-danger"></span>
+<div class="mb-3">
+    <label asp-for="Cep" class="form-label"></label>
+    <div class="input-group">
+        <input asp-for="Cep" class="form-control" id="Cep" />
+        <button type="button" class="btn btn-outline-secondary" id="btnBuscarCep">Buscar CEP</button>
     </div>
+    <span asp-validation-for="Cep" class="text-danger"></span>
+</div>
 
     <div class="mb-3">
         <label asp-for="Logradouro" class="form-label"></label>
@@ -59,4 +62,32 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        document.getElementById("btnBuscarCep").addEventListener("click", async function () {
+            const cep = document.getElementById("Cep").value;
+
+            if (!cep) {
+                alert("Informe um CEP.");
+                return;
+            }
+
+            const response = await fetch(`/Enderecos/BuscarPorCep?cep=${cep}`);
+
+            if (!response.ok) {
+                alert("CEP não encontrado.");
+                return;
+            }
+
+            const data = await response.json();
+
+            document.getElementById("Logradouro").value = data.logradouro || "";
+            document.getElementById("Complemento").value = data.complemento || "";
+            document.getElementById("Bairro").value = data.bairro || "";
+            document.getElementById("Cidade").value = data.cidade || "";
+            document.getElementById("Uf").value = data.uf || "";
+            document.getElementById("Cep").value = (data.cep || cep).replace(/\D/g, "");
+        });
+    </script>
 }
+
