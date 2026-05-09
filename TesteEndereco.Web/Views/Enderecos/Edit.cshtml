@@ -66,6 +66,12 @@
     }
 
     <script>
+        const campoCep = document.getElementById("Cep");
+        
+        campoCep.addEventListener("input", function () {
+        this.value = this.value.replace(/\D/g, "");
+        });
+
         document.getElementById("btnBuscarCep").addEventListener("click", async function () {
             const cep = document.getElementById("Cep").value;
 
