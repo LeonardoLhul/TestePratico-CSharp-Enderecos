@@ -20,6 +20,7 @@
             <th>Cidade</th>
             <th>UF</th>
             <th>Complemento</th>
+            <th>Ações</th>
         </tr>
     </thead>
     <tbody>
@@ -33,6 +34,10 @@
                 <td>@endereco.Cidade</td>
                 <td>@endereco.Uf</td>
                 <td>@endereco.Complemento</td>
+                <td>
+                <a asp-action="Edit" asp-route-id="@endereco.Id" class="btn btn-sm btn-warning">Editar</a>
+                </td>
+
             </tr>
         }
     </tbody>

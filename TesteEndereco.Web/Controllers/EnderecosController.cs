@@ -99,5 +99,75 @@ namespace TesteEndereco.Web.Controllers
                 uf = endereco.Uf
             });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+
+            if (!usuarioId.HasValue)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var endereco = await _context.Enderecos
+                .FirstOrDefaultAsync(e => e.Id == id && e.UsuarioId == usuarioId.Value);
+
+            if (endereco == null)
+            {
+                return NotFound();
+            }
+
+            return View(endereco);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Endereco endereco)
+        {
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+
+            if (!usuarioId.HasValue)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (id != endereco.Id)
+            {
+                return NotFound();
+            }
+
+            endereco.Cep = new string(endereco.Cep.Where(char.IsDigit).ToArray());
+
+            if (!ModelState.IsValid)
+            {
+                return View(endereco);
+            }
+
+            var enderecoExistente = await _context.Enderecos
+                .FirstOrDefaultAsync(e => e.Id == id && e.UsuarioId == usuarioId.Value);
+
+            if (enderecoExistente == null)
+            {
+                return NotFound();
+            }
+
+            enderecoExistente.Cep = endereco.Cep;
+            enderecoExistente.Logradouro = endereco.Logradouro;
+            enderecoExistente.Complemento = endereco.Complemento;
+            enderecoExistente.Bairro = endereco.Bairro;
+            enderecoExistente.Cidade = endereco.Cidade;
+            enderecoExistente.Uf = endereco.Uf;
+            enderecoExistente.Numero = endereco.Numero;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
