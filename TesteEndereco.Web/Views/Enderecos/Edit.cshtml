@@ -1,17 +1,20 @@
-@model TesteEndereco.Web.Models.Endereco
+ï»¿@model TesteEndereco.Web.Models.Endereco
 
 @{
-    ViewData["Title"] = "Editar Endereço";
+    ViewData["Title"] = "Editar EndereÃ§o";
 }
 
-<h2>Editar Endereço</h2>
+<h2>Editar EndereÃ§o</h2>
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
 
     <div class="mb-3">
         <label asp-for="Cep" class="form-label"></label>
-        <input asp-for="Cep" class="form-control" />
+        <div class="input-group">
+            <input asp-for="Cep" class="form-control" id="Cep" />
+            <button type="button" class="btn btn-outline-secondary" id="btnBuscarCep">Buscar CEP</button>
+        </div>
         <span asp-validation-for="Cep" class="text-danger"></span>
     </div>
 
@@ -53,7 +56,7 @@
 
     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+    <button type="submit" class="btn btn-primary">Salvar AlteraÃ§Ãµes</button>
     <a asp-action="Index" class="btn btn-secondary">Voltar</a>
 </form>
 
@@ -61,4 +64,31 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        document.getElementById("btnBuscarCep").addEventListener("click", async function () {
+            const cep = document.getElementById("Cep").value;
+
+            if (!cep) {
+                alert("Informe um CEP.");
+                return;
+            }
+
+            const response = await fetch(`/Enderecos/BuscarPorCep?cep=${cep}`);
+
+            if (!response.ok) {
+                alert("CEP nÃ£o encontrado.");
+                return;
+            }
+
+            const data = await response.json();
+
+            document.getElementById("Logradouro").value = data.logradouro || "";
+            document.getElementById("Complemento").value = data.complemento || "";
+            document.getElementById("Bairro").value = data.bairro || "";
+            document.getElementById("Cidade").value = data.cidade || "";
+            document.getElementById("Uf").value = data.uf || "";
+            document.getElementById("Cep").value = (data.cep || cep).replace(/\D/g, "");
+        });
+    </script>
 }

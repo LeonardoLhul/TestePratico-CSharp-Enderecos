@@ -1,10 +1,10 @@
-@model TesteEndereco.Web.Models.Endereco
+Ôªø@model TesteEndereco.Web.Models.Endereco
 
 @{
-    ViewData["Title"] = "Novo EndereÁo";
+    ViewData["Title"] = "Novo Endere√ßo";
 }
 
-<h2>Novo EndereÁo</h2>
+<h2>Novo Endere√ßo</h2>
 
 <form asp-action="Create" method="post">
 <div class="mb-3">
@@ -75,7 +75,7 @@
             const response = await fetch(`/Enderecos/BuscarPorCep?cep=${cep}`);
 
             if (!response.ok) {
-                alert("CEP n„o encontrado.");
+                alert("CEP n√£o encontrado.");
                 return;
             }
 

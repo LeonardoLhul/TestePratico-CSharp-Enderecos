@@ -1,8 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TesteEndereco.Web.Data;
 using TesteEndereco.Web.Models;
 using TesteEndereco.Web.Services;
+using System.Text;
 
 namespace TesteEndereco.Web.Controllers
 {
@@ -86,7 +87,7 @@ namespace TesteEndereco.Web.Controllers
 
             if (endereco == null || endereco.Erro)
             {
-                return NotFound(new { mensagem = "CEP n�o encontrado." });
+                return NotFound(new { mensagem = "CEP não encontrado." });
             }
 
             return Json(new
@@ -218,6 +219,36 @@ namespace TesteEndereco.Web.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public async Task<IActionResult> ExportarCsv()
+        {
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+
+            if (!usuarioId.HasValue)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var enderecos = await _context.Enderecos
+                .Where(e => e.UsuarioId == usuarioId.Value)
+                .ToListAsync();
+
+            var csv = new StringBuilder();
+            csv.AppendLine("Cep,Logradouro,Numero,Complemento,Bairro,Cidade,Uf");
+
+            foreach (var endereco in enderecos)
+            {
+                csv.AppendLine(
+                    $"\"{endereco.Cep}\",\"{endereco.Logradouro}\",\"{endereco.Numero}\",\"{endereco.Complemento}\",\"{endereco.Bairro}\",\"{endereco.Cidade}\",\"{endereco.Uf}\"");
+            }
+
+            var bytes = Encoding.UTF8.GetPreamble()
+                .Concat(Encoding.UTF8.GetBytes(csv.ToString()))
+                .ToArray();
+            var nomeArquivo = $"enderecos-{DateTime.Now:yyyyMMddHHmmss}.csv";
+
+            return File(bytes, "text/csv; charset=utf-8", nomeArquivo);
         }
     }
 }

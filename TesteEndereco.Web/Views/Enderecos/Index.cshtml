@@ -1,13 +1,15 @@
-@model IEnumerable<TesteEndereco.Web.Models.Endereco>
+ï»¿@model IEnumerable<TesteEndereco.Web.Models.Endereco>
+@using Microsoft.AspNetCore.Http
 
 @{
-    ViewData["Title"] = "Meus Endereços";
+    ViewData["Title"] = "Meus EndereÃ§os";
 }
 
-<h2>Meus Endereços</h2>
+<h2>Meus EndereÃ§os</h2>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Novo Endereço</a>
+    <a asp-action="Create" class="btn btn-primary">Novo EndereÃ§o</a>
+    <a asp-action="ExportarCsv" class="btn btn-success">Exportar CSV</a>
 </p>
 
 <table class="table table-striped">
@@ -15,12 +17,12 @@
         <tr>
             <th>CEP</th>
             <th>Logradouro</th>
-            <th>Número</th>
+            <th>NÃºmero</th>
             <th>Bairro</th>
             <th>Cidade</th>
             <th>UF</th>
             <th>Complemento</th>
-            <th>Ações</th>
+            <th>AÃ§Ãµes</th>
         </tr>
     </thead>
     <tbody>
