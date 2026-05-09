@@ -169,5 +169,55 @@ namespace TesteEndereco.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+
+            if (!usuarioId.HasValue)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var endereco = await _context.Enderecos
+                .FirstOrDefaultAsync(e => e.Id == id && e.UsuarioId == usuarioId.Value);
+
+            if (endereco == null)
+            {
+                return NotFound();
+            }
+
+            return View(endereco);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+
+            if (!usuarioId.HasValue)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var endereco = await _context.Enderecos
+                .FirstOrDefaultAsync(e => e.Id == id && e.UsuarioId == usuarioId.Value);
+
+            if (endereco == null)
+            {
+                return NotFound();
+            }
+
+            _context.Enderecos.Remove(endereco);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

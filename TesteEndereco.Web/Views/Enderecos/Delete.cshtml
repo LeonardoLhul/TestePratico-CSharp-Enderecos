@@ -1,0 +1,35 @@
+
+@model TesteEndereco.Web.Models.Endereco
+
+@{
+    ViewData["Title"] = "Excluir Endereço";
+}
+
+<h2>Excluir Endereço</h2>
+
+<h4>Tem certeza que deseja excluir este endereço?</h4>
+
+<div class="mb-3">
+    <strong>CEP:</strong> @Model.Cep
+</div>
+<div class="mb-3">
+    <strong>Logradouro:</strong> @Model.Logradouro
+</div>
+<div class="mb-3">
+    <strong>Número:</strong> @Model.Numero
+</div>
+<div class="mb-3">
+    <strong>Bairro:</strong> @Model.Bairro
+</div>
+<div class="mb-3">
+    <strong>Cidade:</strong> @Model.Cidade
+</div>
+<div class="mb-3">
+    <strong>UF:</strong> @Model.Uf
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Excluir</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

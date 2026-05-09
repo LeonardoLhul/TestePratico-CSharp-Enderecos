@@ -35,7 +35,8 @@
                 <td>@endereco.Uf</td>
                 <td>@endereco.Complemento</td>
                 <td>
-                <a asp-action="Edit" asp-route-id="@endereco.Id" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Edit" asp-route-id="@endereco.Id" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@endereco.Id" class="btn btn-sm btn-danger">Excluir</a>
                 </td>
 
             </tr>
